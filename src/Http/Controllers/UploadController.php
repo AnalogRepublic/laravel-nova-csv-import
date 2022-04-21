@@ -28,9 +28,13 @@ class UploadController
         }
 
         // Store the file temporarily
-        $hash = File::hash($file->getRealPath()).".".$extension;
+        $hash = File::hash($file->getRealPath()) . "." . $extension;
 
-        $file->move(storage_path('nova/laravel-nova-import-csv/tmp'), $hash);
+        try {
+            $file->move(storage_path('nova/laravel-nova-import-csv/tmp'), $hash);
+        } catch (\Exception $e) {
+            return response()->json(['result' => 'error', 'message' => 'Sorry, we could not import that file'], 422);
+        }
 
         return response()->json(['result' => 'success', 'file' => $hash]);
     }
