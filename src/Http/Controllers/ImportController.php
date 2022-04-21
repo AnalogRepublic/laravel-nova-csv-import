@@ -2,6 +2,7 @@
 
 namespace SimonHamp\LaravelNovaCsvImport\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use Laravel\Nova\Nova;
 use Laravel\Nova\Resource;
 use Laravel\Nova\Rules\Relatable;
@@ -148,7 +149,9 @@ class ImportController
 
     protected function getFilePath($file)
     {
-        return storage_path("nova/laravel-nova-import-csv/tmp/{$file}");
+        $disk = config('nova-csv-importer.disk');
+        return $disk ? Storage::disk($disk)->getAdapter()->getPathPrefix() . 'nova/laravel-nova-import-csv/tmp/' . $file
+            : storage_path("nova/laravel-nova-import-csv/tmp/{$file}");
     }
 
     private function responseError($error)
