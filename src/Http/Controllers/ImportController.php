@@ -27,8 +27,9 @@ class ImportController
 
     public function preview(NovaRequest $request, $file)
     {
+        $disk = config('nova-csv-importer.disk');
         $import = $this->importer
-            ->toCollection($this->getFilePath($file), null)
+            ->toCollection($this->getFilePath($file), $disk)
             ->first();
 
         $headings = $import->first()->keys();
@@ -102,6 +103,7 @@ class ImportController
 
     public function import(NovaRequest $request, $file)
     {
+        $disk = config('nova-csv-importer.disk');
         $resource_name = $request->input('resource');
         $request->route()->setParameter('resource', $resource_name);
 
@@ -117,7 +119,7 @@ class ImportController
             ->setAttributeMap($attribute_map)
             ->setRules($rules)
             ->setModelClass($model_class)
-            ->import($this->getFilePath($file), null);
+            ->import($this->getFilePath($file), $disk);
 
         if (! $this->importer->failures()->isEmpty() || ! $this->importer->errors()->isEmpty()) {
             return response()->json(['result' => 'failure', 'errors' => $this->importer->errors(), 'failures' => $this->importer->failures()]);
