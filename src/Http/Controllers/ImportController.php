@@ -2,6 +2,8 @@
 
 namespace SimonHamp\LaravelNovaCsvImport\Http\Controllers;
 
+set_time_limit(300);
+
 use Illuminate\Support\Facades\Storage;
 use Laravel\Nova\Nova;
 use Laravel\Nova\Resource;
